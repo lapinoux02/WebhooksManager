@@ -1,0 +1,2 @@
+cd ../Photoss
+git pull
