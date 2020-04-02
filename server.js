@@ -31,7 +31,7 @@ function verifyPostData(req, res, next) {
 }
 
 app.post('/', verifyPostData, (req, res) => {
-	execSync(`sh bash/${req.body.repository.name}.sh`);
+	require(`./scripts/${req.body.repository.name}`)();
 	console.log(`projet ${req.body.repository.name} mis à jour.`);
 	res.end('done');
 });
