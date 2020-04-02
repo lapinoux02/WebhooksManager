@@ -31,6 +31,7 @@ function verifyPostData(req, res, next) {
 }
 
 app.post('/', verifyPostData, (req, res) => {
+	console.log(`début de la mise à jour du projet ${req.body.repository.name}...`);
 	require(`./scripts/${req.body.repository.name}`)();
 	console.log(`projet ${req.body.repository.name} mis à jour.`);
 	res.end('done');
