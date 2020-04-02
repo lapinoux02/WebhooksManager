@@ -32,6 +32,7 @@ function verifyPostData(req, res, next) {
 
 app.post('/', verifyPostData, (req, res) => {
 	execSync(`sh bash/${req.body.repository.name}.sh`);
+	res.end('done');
 });
 
 app.listen(port);
