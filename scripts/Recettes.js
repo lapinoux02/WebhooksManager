@@ -89,7 +89,6 @@ function recettesScript () {
 	// Génération des fichiers.html
 	const header = fs.readFileSync(`${folder}/_html/header.html`).toString();
 	let link = '<link rel="stylesheet" type="text/css" href="./_css/style.css"/>';
-	console.log(`cd ${folder} && echo '${link}' > index.html && echo '${header.replace('[PATH]', '.')}' >> index.html && markdown index.md >> index.html`);
 	execSync(`cd ${folder} && echo '${link}' > index.html && echo '${header.replace('[PATH]', '.')}' >> index.html && markdown index.md >> index.html`);
 	subDirs.forEach(subDir => {
 		link = '<link rel="stylesheet" type="text/css" href="../_css/style.css"/>'
@@ -97,7 +96,6 @@ function recettesScript () {
 		files.forEach(fileExt => {
 			const file = fileExt.replace('.md', '');
 			execSync(`cd ${folder}/${subDir} && echo '${link}' > ${file}.html && echo '${header.replace('[PATH]', '..')}' >> ${file}.html && markdown ${file}.md >> ${file}.html`);
-			console.log(`cd ${folder}/${subDir} && echo '${link}' > ${file}.html && echo '${header.replace('[PATH]', '..')}' >> ${file}.html && markdown ${file}.md >> ${file}.html`);
 		})
 	});
 }
