@@ -2,6 +2,7 @@ module.exports = recettesScript;
 
 const fs = require('fs');
 const folder = '../Recettes';
+const execSync = require('child_process').execSync;
 
 // Génère le fichier nav
 let getNav = (subDirs) => {return `<nav><ul>
@@ -76,7 +77,6 @@ let generateHtml = (path, fileName, relativePath) => {
 
 // Fonction principale
 function recettesScript () {
-	const execSync = require('child_process').execSync;
 
 
 	// Mise à jour du repo
