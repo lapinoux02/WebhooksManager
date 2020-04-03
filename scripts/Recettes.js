@@ -23,34 +23,35 @@ ${keyWords[keyWord].map(e => `* [${e.title}](./${e.file.replace('.md', '.html')}
 // Récupération des mots clé
 let fetchKeyWord = (path, files, model, withoutModel) => {
 	const keyWords = {};
-	files.forEach(file => {
-		const contentFile = fs.readFileSync(`${path}/${file}`).toString();
-		const lines = contentFile.split('\n');
-		const modelLine = lines.find(line => !line.indexOf(model));
-		const title = lines[0].replace('# ', '').replace('\r', '');
-		if (modelLine) {
-			modelLine.replace(model, '').replace('\r', '').split(', ').forEach(keyWord => {
-				if (keyWord) {
-					if (keyWords[keyWord]) {
-						keyWords[keyWord].push({file, title});
-					} else {
-						keyWords[keyWord] = [{file, title}];
+	files.filter(file => file !== 'index.md' && file !== 'tags.md')
+		.forEach(file => {
+			const contentFile = fs.readFileSync(`${path}/${file}`).toString();
+			const lines = contentFile.split('\n');
+			const modelLine = lines.find(line => !line.indexOf(model));
+			const title = lines[0].replace('# ', '').replace('\r', '');
+			if (modelLine) {
+				modelLine.replace(model, '').replace('\r', '').split(', ').forEach(keyWord => {
+					if (keyWord) {
+						if (keyWords[keyWord]) {
+							keyWords[keyWord].push({file, title});
+						} else {
+							keyWords[keyWord] = [{file, title}];
+						}
+					} else if (withoutModel) {
+						if (keyWords[withoutModel]) {
+							keyWords[withoutModel].push({file, title});
+						} else {
+							keyWords[withoutModel] = [{file, title}];
+						}
 					}
-				} else if (withoutModel) {
-					if (keyWords[withoutModel]) {
-						keyWords[withoutModel].push({file, title});
-					} else {
-						keyWords[withoutModel] = [{file, title}];
-					}
+				});
+			} else if (withoutModel) {
+				if (keyWords[withoutModel]) {
+					keyWords[withoutModel].push({file, title});
+				} else {
+					keyWords[withoutModel] = [{file, title}];
 				}
-			});
-		} else if (withoutModel) {
-			if (keyWords[withoutModel]) {
-				keyWords[withoutModel].push({file, title});
-			} else {
-				keyWords[withoutModel] = [{file, title}];
 			}
-		}
 	});
 
 	return keyWords;
