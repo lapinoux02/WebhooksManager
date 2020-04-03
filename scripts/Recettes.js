@@ -5,7 +5,7 @@ const fs = require('fs');
 // Génère le fichier index root
 let getRootIndex = (subDirs) => {return `# Recettes
 
-${subDirs.map(subDir => `* [${subDir}](./${subDir}) ([par tags](./${subDir}/tags.html))`).join('\n')}
+${subDirs.map(subDir => `* [${subDir}](./${subDir}/index.html) ([par tags](./${subDir}/tags.html))`).join('\n')}
 `;
 }
 
