@@ -1,18 +1,20 @@
 module.exports = recettesScript;
 
 const fs = require('fs');
+const folder = '../Recettes';
 
-// Génère le fichier index root
-let getRootIndex = (subDirs) => {return `# Recettes
+// Génère le fichier nav
+let getNav = (subDirs) => {return `<nav><ul>
+${subDirs.map(subDir => `<li><a href="[PATH]/${subDir}/index.html">${subDir}</a></li>`).join('\n')}
+</ul></nav>`};
 
-${subDirs.map(subDir => `* [${subDir}](./${subDir}/index.html) ([par tags](./${subDir}/tags.html))`).join('\n')}
-`;
-}
 
 // Génère un fichier d'un sous dossier
-let getSubIndex = (subDir, keyWords) => {return `# ${subDir}
+let getSubIndex = (subDir, keyWords, fileLink, fileLinkTitle) => {return `# ${subDir}
 
 ${Object.keys(keyWords).map(keyWord => `## ${keyWord}
+
+Consulter les recettes par [${fileLinkTitle}](./${fileLink})
 
 ${keyWords[keyWord].map(e => `* [${e.title}](./${e.file.replace('.md', '.html')})`).join('\n')}
 `).join('\n')}`;
@@ -54,11 +56,27 @@ let fetchKeyWord = (path, files, model, withoutModel) => {
 	return keyWords;
 }
 
+// Génération des fichiers html
+let generateHtml = (path, fileName, relativePath) => {
+
+	const header = fs.readFileSync(`${folder}/_html/header.html`).toString();
+	const nav = fs.readFileSync(`${folder}/_html/nav.html`).toString();
+	let link = `<link rel="stylesheet" type="text/css" href="${relativePath}/_css/style.css"/>`;
+
+	execSync(`cd ${path} &&
+			echo '${link}' > ${fileName}.html &&
+			echo '${header.replace('[PATH]', relativePath)}' >> ${fileName}.html &&
+			echo '${nav.replace('[PATH]', relativePath)}' >> ${fileName}.html &&
+			echo '<div id="site_content">' >> ${fileName}.html &&
+			markdown ${fileName}.md >> ${fileName}.html &&
+			echo '</div>' >> ${fileName}.html`);
+}
+
+
 // Fonction principale
 function recettesScript () {
 	const execSync = require('child_process').execSync;
 
-	const folder = '../Recettes';
 
 	// Mise à jour du repo
 	console.log(execSync(`cd ${folder} && git pull`).toString());
@@ -69,8 +87,8 @@ function recettesScript () {
 
 	const subDirs = fs.readdirSync(folder).filter(name => !name.includes('.') && name[0] !== '_');
 
-	// Génération du fichier index.md root
-	fs.writeFileSync(`${folder}/index.md`, getRootIndex(subDirs));
+	// Génération du fichier nav.html
+	fs.writeFileSync(`${folder}/_html/nav.html`, getNav(subDirs));
 
 	// Génération des fichiers index.md subDirs
 	subDirs.forEach(subDir => {
@@ -82,20 +100,17 @@ function recettesScript () {
 		// Récupération des tags
 		const tags = fetchKeyWord(`${folder}/${subDir}`, files, 'Tags : ', 'Non taggé');
 
-		fs.writeFileSync(`${folder}/${subDir}/index.md`, getSubIndex(subDir, categories));
-		fs.writeFileSync(`${folder}/${subDir}/tags.md`, getSubIndex(subDir, tags));
+		fs.writeFileSync(`${folder}/${subDir}/index.md`, getSubIndex(subDir, categories, 'Tags', 'tags.html'));
+		fs.writeFileSync(`${folder}/${subDir}/tags.md`, getSubIndex(subDir, tags, 'Catégories', 'index.html'));
 	});
 
 	// Génération des fichiers.html
-	const header = fs.readFileSync(`${folder}/_html/header.html`).toString();
-	let link = '<link rel="stylesheet" type="text/css" href="./_css/style.css"/>';
-	execSync(`cd ${folder} && echo '${link}' > index.html && echo '${header.replace('[PATH]', '.')}' >> index.html && markdown index.md >> index.html`);
+	generateHtml(folder, 'index', '.');
 	subDirs.forEach(subDir => {
-		link = '<link rel="stylesheet" type="text/css" href="../_css/style.css"/>'
 		const files = fs.readdirSync(`${folder}/${subDir}`);
 		files.forEach(fileExt => {
 			const file = fileExt.replace('.md', '');
-			execSync(`cd ${folder}/${subDir} && echo '${link}' > ${file}.html && echo '${header.replace('[PATH]', '..')}' >> ${file}.html && markdown ${file}.md >> ${file}.html`);
+			generateHtml(`${folder}/${subDir}`, file, '..');
 		})
 	});
 }
