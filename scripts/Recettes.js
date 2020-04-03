@@ -101,8 +101,8 @@ function recettesScript () {
 		// Récupération des tags
 		const tags = fetchKeyWord(`${folder}/${subDir}`, files, 'Tags : ', 'Non taggé');
 
-		fs.writeFileSync(`${folder}/${subDir}/index.md`, getSubIndex(subDir, categories, 'Tags', 'tags.html'));
-		fs.writeFileSync(`${folder}/${subDir}/tags.md`, getSubIndex(subDir, tags, 'Catégories', 'index.html'));
+		fs.writeFileSync(`${folder}/${subDir}/index.md`, getSubIndex(subDir, categories, 'tags.html', 'Tags'));
+		fs.writeFileSync(`${folder}/${subDir}/tags.md`, getSubIndex(subDir, tags, 'index.html', 'Catégories'));
 	});
 
 	// Génération des fichiers.html
