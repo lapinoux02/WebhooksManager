@@ -13,9 +13,9 @@ ${subDirs.map(subDir => `<li><a href="[PATH]/${subDir}/index.html">${subDir}</a>
 // Génère un fichier d'un sous dossier
 let getSubIndex = (subDir, keyWords, fileLink, fileLinkTitle) => {return `# ${subDir}
 
-${Object.keys(keyWords).map(keyWord => `## ${keyWord}
+<p id='lienAutreVue'>[voir par ${fileLinkTitle}](./${fileLink})</p>
 
-Consulter les recettes par [${fileLinkTitle}](./${fileLink})
+${Object.keys(keyWords).map(keyWord => `## ${keyWord}
 
 ${keyWords[keyWord].map(e => `* [${e.title}](./${e.file.replace('.md', '.html')})`).join('\n')}
 `).join('\n')}`;
