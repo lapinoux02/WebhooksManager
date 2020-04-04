@@ -68,7 +68,7 @@ let generateHtml = (path, fileName, relativePath) => {
 	execSync(`cd ${path} &&
 			echo '${link}' > ${fileName}.html &&
 			echo '${header.replace('[PATH]', relativePath)}' >> ${fileName}.html &&
-			echo '${nav.replace('[PATH]', relativePath)}' >> ${fileName}.html &&
+			echo '${nav.replace(/\[PATH\]/g, relativePath)}' >> ${fileName}.html &&
 			echo '<div id="site_content">' >> ${fileName}.html &&
 			markdown ${fileName}.md >> ${fileName}.html &&
 			echo '</div>' >> ${fileName}.html`);
