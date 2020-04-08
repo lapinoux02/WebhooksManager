@@ -108,7 +108,7 @@ function recettesScript () {
 	// Génération des fichiers.html
 	generateHtml(folder, 'index', '.');
 	subDirs.forEach(subDir => {
-		const files = fs.readdirSync(`${folder}/${subDir}`);
+		const files = fs.readdirSync(`${folder}/${subDir}`).filter(file => file.includes('.md'));
 		files.forEach(fileExt => {
 			const file = fileExt.replace('.md', '');
 			generateHtml(`${folder}/${subDir}`, file, '..');
