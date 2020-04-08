@@ -65,7 +65,7 @@ let generateHtml = (path, fileName, relativePath) => {
 	const nav = fs.readFileSync(`${folder}/_html/nav.html`).toString();
 	let link = `<link rel="stylesheet" type="text/css" href="${relativePath}/_css/style.css"/>`;
 
-	execSync(`cd ${path} &&
+	execSync(`cd '${path}' &&
 			echo '${link}' > ${fileName}.html &&
 			echo '${header.replace('[PATH]', relativePath)}' >> ${fileName}.html &&
 			echo '${nav.replace(/\[PATH\]/g, relativePath)}' >> ${fileName}.html &&
